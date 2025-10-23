@@ -1,6 +1,11 @@
 ---
 title: "Paper"
-format: html
+toc: true
+format: 
+  preprint-typst:
+    wordcount: true
+  html: 
+    theme: cosmo
 editor: visual
 bibliography: references.bib
 ---
@@ -70,7 +75,7 @@ max_age_exp1 = max(demo_exp1$Age)
 
 All participant were recruited using either an online recruiting platform (<https://marktplatz.uzhalumni.ch>) or via a mailing list dedicated to students from the Department of Psychology of the University of Zurich. Sample size was determined in advance. Following previous suggestions from [@heathcote2019], a parameter recovery study was run to estimate if 30 usable participant datasets were sufficient to accurately recover the parameter estimates. The parameter recovery study included 30 participant datasets, each with 180 trials (90 trials "familiar" and 90 trials "unfamiliar") and with our selected model parameterisation. The data-generated parameters were sufficiently well-recovered (See Supplementary Materials).
 
-`r participant_n_exp1` healthy participants took part in experiment 2 (`r male_exp1` men and `r female_exp1` women). Ages ranged from `r min_age_exp1` to `r max_age_exp1` years old ($M_{age} =$ `r mean_age_exp1`, $SD_{age} =$ `r sd_age_exp1`). All participants reported normal or corrected-to-normal vision and received payment (20 CHF) for participating in the experiment. Based on our preregistration, response times longer than 2.5 seconds were removed from the analysis. However, this cutoff value led to the the removal of 59% of the trials of one participant. Given the recommendation of having a certain number of trials per condition per participant when using evidence-accumulation models [@heathcote2019; @parker], we decided to exclude this participant from the data analysis. This experiment was accepted by the ethics committee of the Federal Institute of Technology Zurich (ETHZ), and all participant gave their informed consent to participate in the study.
+`r participant_n_exp1` healthy participants took part in experiment 1 (`r male_exp1` men and `r female_exp1` women). Ages ranged from `r min_age_exp1` to `r max_age_exp1` years old ($M_{age} =$ `r mean_age_exp1`, $SD_{age} =$ `r sd_age_exp1`). All participants reported normal or corrected-to-normal vision and received payment (20 CHF) for participating in the experiment. Based on our preregistration, response times longer than 2.5 seconds were removed from the analysis. However, this cutoff value led to the the removal of 59% of the trials of one participant. Given the recommendation of having a certain number of trials per condition per participant when using evidence-accumulation models [@heathcote2019; @parker], we decided to exclude this participant from the data analysis. This experiment was accepted by the ethics committee of the Federal Institute of Technology Zurich (ETHZ), and all participant gave their informed consent to participate in the study.
 
 ### Stimuli
 
@@ -102,7 +107,7 @@ Model specification
 
 ## Discussion
 
-# Experiment 2
+# Experiment 2: replication of Experiment 1 online
 
 ## Method and Materials
 
@@ -162,6 +167,8 @@ In the recognition part, participants completed three blocks of 90 recognition t
 ### Data analysis
 
 The evidence-accumulation modelling analyses of the distribution of response times for the correct and wrong answers were realized using the EMC2 R package (Cit. Niek Stevenson). For the separate analysis of response times and accuracy, we used (blablabla).
+
+
 
 ## Results
 
