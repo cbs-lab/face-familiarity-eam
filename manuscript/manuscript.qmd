@@ -85,14 +85,24 @@ knitr:
 ```{r}
 #| label: setup
 #| include: false
-
 pkgs <- c(
-  "tidyverse", "RColorBrewer", "patchwork", "paletteer", "here", "EMC2", 
-  "tidybayes", "tinytable", "osfr","ragg"
+  "tidyverse",
+  "RColorBrewer",
+  "patchwork",
+  "paletteer",
+  "here",
+  "EMC2",
+  "tidybayes",
+  "tinytable",
+  "osfr",
+  "ragg"
 )
 vapply(
-  pkgs, library, logical(1),
-  character.only = TRUE, logical.return = TRUE
+  pkgs,
+  library,
+  logical(1),
+  character.only = TRUE,
+  logical.return = TRUE
 )
 
 knitr::opts_chunk$set(echo = FALSE)
@@ -100,18 +110,20 @@ knitr::opts_chunk$set(echo = FALSE)
 
 theme_set(
   theme_bw() +
-    theme(text = element_text(size = 15, face = "bold"), 
-          title = element_text(size = 15, face = "bold"),
-          legend.position = "none")
+    theme(
+      text = element_text(size = 15, face = "bold"),
+      title = element_text(size = 15, face = "bold"),
+      legend.position = "none"
+    )
 )
 ## plot settings ##
 ## Plot colors
 safe_pal <- paletteer_d("rcartocolor::Safe", 4)
 
 myColors_3 <- c(
-  "novel"   = safe_pal[1],
+  "novel" = safe_pal[1],
   "learned" = safe_pal[2],
-  "famous"  = safe_pal[3]
+  "famous" = safe_pal[3]
 )
 
 # Subsets for single-experiment plots if still needed
@@ -172,7 +184,6 @@ Finally, the non-decision time is an estimation of the time taken to complete pr
 ```{r}
 #| label: lba-params
 #| include: false
-
 # Helper function to handle format-dependent subscripts
 format_subscript <- function(text) {
   if (knitr::is_html_output()) {
@@ -187,19 +198,18 @@ format_subscript <- function(text) {
 
 # create a df
 lba_params <- tribble(
-  ~Parameter, ~Label, ~Construct,
-  "Start point", "A", "response bias",
-  "Drift rate", "v", "signal-to-noise ratio",
-  "Threshold", "b", "response caution",
-  "Non-decision time", format_subscript("t<sub>0</sub>"), "stimulus encoding and motor response"
+  ~Parameter          , ~Label                            , ~Construct                             ,
+  "Start point"       , "A"                               , "response bias"                        ,
+  "Drift rate"        , "v"                               , "signal-to-noise ratio"                ,
+  "Threshold"         , "b"                               , "response caution"                     ,
+  "Non-decision time" , format_subscript("t<sub>0</sub>") , "stimulus encoding and motor response"
 )
 ```
 
 ```{r}
 #| label: tbl-lba
 #| tbl-cap: Parameters in the linear ballistic accumulator model
-
-lba_params |> 
+lba_params |>
   tt()
 ```
 
@@ -217,23 +227,21 @@ Nonetheless, across a series of experiments, we used manipulations of familiarit
 ```{r}
 #| label: exp-details
 #| include: false
-
 # create a df
 exp_details <- tribble(
-  ~Exp, ~Setting, ~'Familiarity type', ~'Face comparision', ~'Face system',
-  "1", "laboratory", "visual", "visual exposure vs unknown", "core",
-  "2", "online", "visual", "visual exposure vs unknown", "core",
-  "3", "laboratory", "visual & person knowledge", "famous vs unknown", "core & extended",
-  "4", "online", "visual & person knowledge", "famous vs unknown", "core & extended",
-  "5", "online", "visual & person knowledge", "famous vs unknown", "core & extended",
+  ~Exp , ~Setting     , ~'Familiarity type'         , ~'Face comparision'          , ~'Face system'    ,
+  "1"  , "laboratory" , "visual"                    , "visual exposure vs unknown" , "core"            ,
+  "2"  , "online"     , "visual"                    , "visual exposure vs unknown" , "core"            ,
+  "3"  , "laboratory" , "visual & person knowledge" , "famous vs unknown"          , "core & extended" ,
+  "4"  , "online"     , "visual & person knowledge" , "famous vs unknown"          , "core & extended" ,
+  "5"  , "online"     , "visual & person knowledge" , "famous vs unknown"          , "core & extended" ,
 )
 ```
 
 ```{r}
 #| label: tbl-exp
 #| tbl-cap: An overview of the experimental work
-
-exp_details |> 
+exp_details |>
   tt()
 ```
 
@@ -248,7 +256,6 @@ The raw data and analysis code are available on GitHub (<https://github.com/cbs-
 ```{r}
 #| label: exclusions-all
 #| include: false
-
 data_exp1 <- read_csv(here("exp_1", "data", "data_exp_1.csv"))
 data_exp2 <- read_csv(here("exp_2", "data", "data_exp_2.csv"))
 data_exp3 <- read_csv(here("exp_3", "data", "data_exp_3.csv"))
@@ -272,7 +279,6 @@ list_participant_analysis_5 <- data_exp5 |> distinct(pid) |> pull(pid)
 ```{r}
 #| label: demographics-all
 #| include: false
-
 demo_exp1 <- read_csv(here("exp_1", "data", "demo_exp_1_clean.csv"))
 demo_exp2 <- read_csv(here("exp_2", "data", "demo_exp_2_clean.csv"))
 demo_exp3 <- read_csv(here("exp_3", "data", "demo_exp_3_clean.csv"))
@@ -281,7 +287,7 @@ demo_exp5 <- read_csv(here("exp_5", "data", "demo_exp_5_clean.csv"))
 
 
 # Exp 1 inline text scalar
-rt_exp_1  <- read_csv(here("exp_1", "data", "raw_data_exp_1.csv"))
+rt_exp_1 <- read_csv(here("exp_1", "data", "raw_data_exp_1.csv"))
 perc_rt_1 <- rt_exp_1 |>
   filter(pid != "1") |>
   summarise(perc = round(mean(rt > 2, na.rm = TRUE) * 100, 3)) |>
@@ -291,72 +297,91 @@ perc_rt_1 <- rt_exp_1 |>
 ```{r}
 #| label: participant-summary
 #| include: false
-
 participant_summary <- bind_rows(
   tibble(
-    Experiment               = "Experiment 1",
-    Setting                  = "Lab",
-    Completed                = excl_exp1$completed,
-    `RT exclusions`          = excl_exp1$exclude_rt,
-    `Accuracy exclusions`    = excl_exp1$exclude_acc,
+    Experiment = "Experiment 1",
+    Setting = "Lab",
+    Completed = excl_exp1$completed,
+    `RT exclusions` = excl_exp1$exclude_rt,
+    `Accuracy exclusions` = excl_exp1$exclude_acc,
     `Familiarity exclusions` = "—",
-    `Final n`                = excl_exp1$final_n,
-    Female                   = sum(demo_exp1$gender == "Female"),
-    Male                     = sum(demo_exp1$gender == "Male"),
-    `Mean age (SD)`          = paste0(round(mean(demo_exp1$age), 1), " (",
-                                      round(sd(demo_exp1$age), 1), ")")
+    `Final n` = excl_exp1$final_n,
+    Female = sum(demo_exp1$gender == "Female"),
+    Male = sum(demo_exp1$gender == "Male"),
+    `Mean age (SD)` = paste0(
+      round(mean(demo_exp1$age), 1),
+      " (",
+      round(sd(demo_exp1$age), 1),
+      ")"
+    )
   ),
   tibble(
-    Experiment               = "Experiment 2",
-    Setting                  = "Online",
-    Completed                = excl_exp2$completed,
-    `RT exclusions`          = excl_exp2$exclude_rt,
-    `Accuracy exclusions`    = excl_exp2$exclude_acc,
+    Experiment = "Experiment 2",
+    Setting = "Online",
+    Completed = excl_exp2$completed,
+    `RT exclusions` = excl_exp2$exclude_rt,
+    `Accuracy exclusions` = excl_exp2$exclude_acc,
     `Familiarity exclusions` = "—",
-    `Final n`                = excl_exp2$final_n,
-    Female                   = sum(demo_exp2$gender == "Female"),
-    Male                     = sum(demo_exp2$gender == "Male"),
-    `Mean age (SD)`          = paste0(round(mean(demo_exp2$age), 1), " (",
-                                      round(sd(demo_exp2$age), 1), ")")
+    `Final n` = excl_exp2$final_n,
+    Female = sum(demo_exp2$gender == "Female"),
+    Male = sum(demo_exp2$gender == "Male"),
+    `Mean age (SD)` = paste0(
+      round(mean(demo_exp2$age), 1),
+      " (",
+      round(sd(demo_exp2$age), 1),
+      ")"
+    )
   ),
   tibble(
-    Experiment               = "Experiment 3",
-    Setting                  = "Lab",
-    Completed                = excl_exp3$completed,
-    `RT exclusions`          = excl_exp3$exclude_rt,
-    `Accuracy exclusions`    = excl_exp3$exclude_acc,
+    Experiment = "Experiment 3",
+    Setting = "Lab",
+    Completed = excl_exp3$completed,
+    `RT exclusions` = excl_exp3$exclude_rt,
+    `Accuracy exclusions` = excl_exp3$exclude_acc,
     `Familiarity exclusions` = as.character(excl_exp3$exclude_ratings),
-    `Final n`                = excl_exp3$final_n,
-    Female                   = sum(demo_exp3$gender == "Female"),
-    Male                     = sum(demo_exp3$gender == "Male"),
-    `Mean age (SD)`          = paste0(round(mean(demo_exp3$age), 1), " (",
-                                      round(sd(demo_exp3$age), 1), ")")
+    `Final n` = excl_exp3$final_n,
+    Female = sum(demo_exp3$gender == "Female"),
+    Male = sum(demo_exp3$gender == "Male"),
+    `Mean age (SD)` = paste0(
+      round(mean(demo_exp3$age), 1),
+      " (",
+      round(sd(demo_exp3$age), 1),
+      ")"
+    )
   ),
   tibble(
-    Experiment               = "Experiment 4",
-    Setting                  = "Online",
-    Completed                = excl_exp4$completed,
-    `RT exclusions`          = excl_exp4$exclude_rt,
-    `Accuracy exclusions`    = excl_exp4$exclude_acc,
+    Experiment = "Experiment 4",
+    Setting = "Online",
+    Completed = excl_exp4$completed,
+    `RT exclusions` = excl_exp4$exclude_rt,
+    `Accuracy exclusions` = excl_exp4$exclude_acc,
     `Familiarity exclusions` = as.character(excl_exp4$exclude_ratings),
-    `Final n`                = excl_exp4$final_n,
-    Female                   = sum(demo_exp4$gender == "Female"),
-    Male                     = sum(demo_exp4$gender == "Male"),
-    `Mean age (SD)`          = paste0(round(mean(demo_exp4$age), 1), " (",
-                                      round(sd(demo_exp4$age), 1), ")")
+    `Final n` = excl_exp4$final_n,
+    Female = sum(demo_exp4$gender == "Female"),
+    Male = sum(demo_exp4$gender == "Male"),
+    `Mean age (SD)` = paste0(
+      round(mean(demo_exp4$age), 1),
+      " (",
+      round(sd(demo_exp4$age), 1),
+      ")"
+    )
   ),
   tibble(
-    Experiment               = "Experiment 5",
-    Setting                  = "Online",
-    Completed                = excl_exp5$completed,
-    `RT exclusions`          = excl_exp5$exclude_rt,
-    `Accuracy exclusions`    = excl_exp5$exclude_acc,
+    Experiment = "Experiment 5",
+    Setting = "Online",
+    Completed = excl_exp5$completed,
+    `RT exclusions` = excl_exp5$exclude_rt,
+    `Accuracy exclusions` = excl_exp5$exclude_acc,
     `Familiarity exclusions` = as.character(excl_exp4$exclude_ratings),
-    `Final n`                = excl_exp5$final_n,
-    Female                   = sum(demo_exp5$gender == "Female"),
-    Male                     = sum(demo_exp5$gender == "Male"),
-    `Mean age (SD)`          = paste0(round(mean(demo_exp5$age), 1), " (",
-                                      round(sd(demo_exp5$age), 1), ")")
+    `Final n` = excl_exp5$final_n,
+    Female = sum(demo_exp5$gender == "Female"),
+    Male = sum(demo_exp5$gender == "Male"),
+    `Mean age (SD)` = paste0(
+      round(mean(demo_exp5$age), 1),
+      " (",
+      round(sd(demo_exp5$age), 1),
+      ")"
+    )
   )
 )
 
@@ -369,71 +394,86 @@ exp5_row <- participant_summary |> filter(Experiment == "Experiment 5")
 
 
 # Exp 1
-completed_exp1      <- as.integer(exp1_row$Completed)
-exclude_rt_exp1     <- as.integer(exp1_row$`RT exclusions`)
-exclude_acc_exp1    <- as.integer(exp1_row$`Accuracy exclusions`)
-final_n_exp1        <- as.integer(exp1_row$`Final n`)
-male_exp1           <- as.integer(exp1_row$Male)
-female_exp1         <- as.integer(exp1_row$Female)
-mean_age_exp1       <- as.numeric(str_extract(exp1_row$`Mean age (SD)`, "^[0-9.]+"))
-sd_age_exp1         <- as.numeric(str_extract(exp1_row$`Mean age (SD)`, "(?<=\\().*(?=\\))"))
-min_age_exp1        <- min(demo_exp1$age)
-max_age_exp1        <- max(demo_exp1$age)
+completed_exp1 <- as.integer(exp1_row$Completed)
+exclude_rt_exp1 <- as.integer(exp1_row$`RT exclusions`)
+exclude_acc_exp1 <- as.integer(exp1_row$`Accuracy exclusions`)
+final_n_exp1 <- as.integer(exp1_row$`Final n`)
+male_exp1 <- as.integer(exp1_row$Male)
+female_exp1 <- as.integer(exp1_row$Female)
+mean_age_exp1 <- as.numeric(str_extract(exp1_row$`Mean age (SD)`, "^[0-9.]+"))
+sd_age_exp1 <- as.numeric(str_extract(
+  exp1_row$`Mean age (SD)`,
+  "(?<=\\().*(?=\\))"
+))
+min_age_exp1 <- min(demo_exp1$age)
+max_age_exp1 <- max(demo_exp1$age)
 
 # Exp 2
-completed_exp2      <- as.integer(exp2_row$Completed)
-exclude_rt_exp2     <- as.integer(exp2_row$`RT exclusions`)
-exclude_acc_exp2    <- as.integer(exp2_row$`Accuracy exclusions`)
-final_n_exp2        <- as.integer(exp2_row$`Final n`)
-male_exp2           <- as.integer(exp2_row$Male)
-female_exp2         <- as.integer(exp2_row$Female)
-mean_age_exp2       <- as.numeric(str_extract(exp2_row$`Mean age (SD)`, "^[0-9.]+"))
-sd_age_exp2         <- as.numeric(str_extract(exp2_row$`Mean age (SD)`, "(?<=\\().*(?=\\))"))
-min_age_exp2        <- min(demo_exp2$age)
-max_age_exp2        <- max(demo_exp2$age)
+completed_exp2 <- as.integer(exp2_row$Completed)
+exclude_rt_exp2 <- as.integer(exp2_row$`RT exclusions`)
+exclude_acc_exp2 <- as.integer(exp2_row$`Accuracy exclusions`)
+final_n_exp2 <- as.integer(exp2_row$`Final n`)
+male_exp2 <- as.integer(exp2_row$Male)
+female_exp2 <- as.integer(exp2_row$Female)
+mean_age_exp2 <- as.numeric(str_extract(exp2_row$`Mean age (SD)`, "^[0-9.]+"))
+sd_age_exp2 <- as.numeric(str_extract(
+  exp2_row$`Mean age (SD)`,
+  "(?<=\\().*(?=\\))"
+))
+min_age_exp2 <- min(demo_exp2$age)
+max_age_exp2 <- max(demo_exp2$age)
 
 # Exp 3
-completed_exp3       <- as.integer(exp3_row$Completed)
-exclude_rt_exp3      <- as.integer(exp3_row$`RT exclusions`)
-exclude_acc_exp3     <- as.integer(exp3_row$`Accuracy exclusions`)
+completed_exp3 <- as.integer(exp3_row$Completed)
+exclude_rt_exp3 <- as.integer(exp3_row$`RT exclusions`)
+exclude_acc_exp3 <- as.integer(exp3_row$`Accuracy exclusions`)
 exclude_ratings_exp3 <- as.integer(exp3_row$`Familiarity exclusions`)
-over_95_exp3         <- as.integer(excl_exp3$over_95)
-under_55_exp3        <- as.integer(excl_exp3$under_55)
-final_n_exp3         <- as.integer(exp3_row$`Final n`)
-male_exp3            <- as.integer(exp3_row$Male)
-female_exp3          <- as.integer(exp3_row$Female)
-mean_age_exp3        <- as.numeric(str_extract(exp3_row$`Mean age (SD)`, "^[0-9.]+"))
-sd_age_exp3          <- as.numeric(str_extract(exp3_row$`Mean age (SD)`, "(?<=\\().*(?=\\))"))
-min_age_exp3         <- min(demo_exp3$age)
-max_age_exp3         <- max(demo_exp3$age)
+over_95_exp3 <- as.integer(excl_exp3$over_95)
+under_55_exp3 <- as.integer(excl_exp3$under_55)
+final_n_exp3 <- as.integer(exp3_row$`Final n`)
+male_exp3 <- as.integer(exp3_row$Male)
+female_exp3 <- as.integer(exp3_row$Female)
+mean_age_exp3 <- as.numeric(str_extract(exp3_row$`Mean age (SD)`, "^[0-9.]+"))
+sd_age_exp3 <- as.numeric(str_extract(
+  exp3_row$`Mean age (SD)`,
+  "(?<=\\().*(?=\\))"
+))
+min_age_exp3 <- min(demo_exp3$age)
+max_age_exp3 <- max(demo_exp3$age)
 
 # Exp 4
-completed_exp4       <- as.integer(exp4_row$Completed)
-exclude_rt_exp4      <- as.integer(exp4_row$`RT exclusions`)
-exclude_acc_exp4     <- as.integer(exp4_row$`Accuracy exclusions`)
+completed_exp4 <- as.integer(exp4_row$Completed)
+exclude_rt_exp4 <- as.integer(exp4_row$`RT exclusions`)
+exclude_acc_exp4 <- as.integer(exp4_row$`Accuracy exclusions`)
 exclude_ratings_exp4 <- as.integer(exp4_row$`Familiarity exclusions`)
-final_n_exp4         <- as.integer(exp4_row$`Final n`)
-male_exp4            <- as.integer(exp4_row$Male)
-female_exp4          <- as.integer(exp4_row$Female)
-mean_age_exp4        <- as.numeric(str_extract(exp4_row$`Mean age (SD)`, "^[0-9.]+"))
-sd_age_exp4          <- as.numeric(str_extract(exp4_row$`Mean age (SD)`, "(?<=\\().*(?=\\))"))
-min_age_exp4         <- min(demo_exp4$age)
-max_age_exp4         <- max(demo_exp4$age)
+final_n_exp4 <- as.integer(exp4_row$`Final n`)
+male_exp4 <- as.integer(exp4_row$Male)
+female_exp4 <- as.integer(exp4_row$Female)
+mean_age_exp4 <- as.numeric(str_extract(exp4_row$`Mean age (SD)`, "^[0-9.]+"))
+sd_age_exp4 <- as.numeric(str_extract(
+  exp4_row$`Mean age (SD)`,
+  "(?<=\\().*(?=\\))"
+))
+min_age_exp4 <- min(demo_exp4$age)
+max_age_exp4 <- max(demo_exp4$age)
 
 # Exp 5
-completed_exp5       <- as.integer(exp5_row$Completed)
-exclude_rt_exp5      <- as.integer(exp5_row$`RT exclusions`)
-exclude_acc_exp5     <- as.integer(exp5_row$`Accuracy exclusions`)
+completed_exp5 <- as.integer(exp5_row$Completed)
+exclude_rt_exp5 <- as.integer(exp5_row$`RT exclusions`)
+exclude_acc_exp5 <- as.integer(exp5_row$`Accuracy exclusions`)
 exclude_ratings_exp5 <- as.integer(exp5_row$`Familiarity exclusions`)
-over_95_exp5         <- as.integer(excl_exp5$over_95)
-under_55_exp5        <- as.integer(excl_exp5$under_55)
-final_n_exp5         <- as.integer(exp5_row$`Final n`)
-male_exp5            <- as.integer(exp5_row$Male)
-female_exp5          <- as.integer(exp5_row$Female)
-mean_age_exp5        <- as.numeric(str_extract(exp5_row$`Mean age (SD)`, "^[0-9.]+"))
-sd_age_exp5          <- as.numeric(str_extract(exp5_row$`Mean age (SD)`, "(?<=\\().*(?=\\))"))
-min_age_exp5         <- min(demo_exp5$age)
-max_age_exp5         <- max(demo_exp5$age)
+over_95_exp5 <- as.integer(excl_exp5$over_95)
+under_55_exp5 <- as.integer(excl_exp5$under_55)
+final_n_exp5 <- as.integer(exp5_row$`Final n`)
+male_exp5 <- as.integer(exp5_row$Male)
+female_exp5 <- as.integer(exp5_row$Female)
+mean_age_exp5 <- as.numeric(str_extract(exp5_row$`Mean age (SD)`, "^[0-9.]+"))
+sd_age_exp5 <- as.numeric(str_extract(
+  exp5_row$`Mean age (SD)`,
+  "(?<=\\().*(?=\\))"
+))
+min_age_exp5 <- min(demo_exp5$age)
+max_age_exp5 <- max(demo_exp5$age)
 ```
 
 ## Experiment 1
@@ -459,9 +499,10 @@ All experiments in this paper were approved by the ethics committee of the Feder
 #| label: tbl-participants
 #| tbl-cap: "Participant summary across experiments."
 #| include: true
-
 participant_summary |>
-  tt(notes = "RT = response time; — = criterion not applicable for this experiment.") |>
+  tt(
+    notes = "RT = response time; — = criterion not applicable for this experiment."
+  ) |>
   style_tt(fontsize = 0.85)
 ```
 
@@ -698,16 +739,15 @@ A single value for the start point (A) and non-decision time (t0) was estimated 
 ```{r}
 #| label: data-model-formula
 #| include: false
-
 # create a df
 lba_formula <- tribble(
-  ~Parameter, ~Label, ~Condition, ~Response, ~Accuracy, ~Fixed,
-  "Start point", "A", "-", "-", "-", "-",
-  "Mean drift rate", "v", "yes", "no", "yes", "-",
-  "SD drift rate", "sd_v", "no", "no", "yes", "-",
-  "SD false drift rate", "false.sd_v", "-", "-", "-", "1",
-  "Threshold", "b", "no", "yes", "no", "-",
-  "Non-decision time", "t0", "-", "-", "-", "-",
+  ~Parameter            , ~Label       , ~Condition , ~Response , ~Accuracy , ~Fixed ,
+  "Start point"         , "A"          , "-"        , "-"       , "-"       , "-"    ,
+  "Mean drift rate"     , "v"          , "yes"      , "no"      , "yes"     , "-"    ,
+  "SD drift rate"       , "sd_v"       , "no"       , "no"      , "yes"     , "-"    ,
+  "SD false drift rate" , "false.sd_v" , "-"        , "-"       , "-"       , "1"    ,
+  "Threshold"           , "b"          , "no"       , "yes"     , "no"      , "-"    ,
+  "Non-decision time"   , "t0"         , "-"        , "-"       , "-"       , "-"    ,
 )
 ```
 
@@ -715,9 +755,10 @@ lba_formula <- tribble(
 #| label: tbl-model-formula
 #| tbl-cap: "Formula specification for the pre-registered linear ballistic accumulator model."
 #| include: true
-
 lba_formula |>
-   tt(notes = "Condition = training condition (Learned vs. Novel or Famous vs. Novel); Response = key-press response (same vs. different); Accuracy = (true/correct vs false/incorrect); SD = standard deviation.")
+  tt(
+    notes = "Condition = training condition (Learned vs. Novel or Famous vs. Novel); Response = key-press response (same vs. different); Accuracy = (true/correct vs false/incorrect); SD = standard deviation."
+  )
 ```
 
 ### Model estimation
@@ -747,18 +788,23 @@ Second, results from the LBA modeling will be presented.
 ```{r}
 #| label: summarise-rt-acc
 #| include: false
-
 # ── Load & normalise ─────────────────────────────────────────────────────────
 # Each experiment gets labelled and pid coerced to character on read-in
 read_exp <- function(path, exp_number, recode = NULL) {
   read_csv(here(path)) |>
     mutate(
-      pid        = as.integer(factor(pid)),  # consistent across both formats
+      pid = as.integer(factor(pid)), # consistent across both formats
       experiment = as.integer(exp_number),
-      block      = as.integer(block),
-      cond       = str_to_lower(cond)
+      block = as.integer(block),
+      cond = str_to_lower(cond)
     ) |>
-    (\(df) if (!is.null(recode)) mutate(df, cond = dplyr::recode(cond, !!!recode)) else df)() |>
+    (\(df) {
+      if (!is.null(recode)) {
+        mutate(df, cond = dplyr::recode(cond, !!!recode))
+      } else {
+        df
+      }
+    })() |>
     select(pid, block, experiment, cond, acc, rt)
 }
 
@@ -766,7 +812,11 @@ data_all <- bind_rows(
   read_exp("exp_1/data/data_exp_1.csv", 1),
   read_exp("exp_2/data/data_exp_2.csv", 2),
   read_exp("exp_3/data/data_exp_3.csv", 3),
-  read_exp("exp_4/data/data_exp_4.csv", 4, recode = c(familiar = "famous", novel = "novel")),
+  read_exp(
+    "exp_4/data/data_exp_4.csv",
+    4,
+    recode = c(familiar = "famous", novel = "novel")
+  ),
   read_exp("exp_5/data/data_exp_5.csv", 5)
 )
 
@@ -775,8 +825,8 @@ head(data_all)
 # ── Summary helpers ───────────────────────────────────────────────────────────
 # Participant-level summary, then group-level summary joined back on
 summarise_pid <- function(df, outcome_col, summary_fn) {
-  summary_fn <- rlang::as_function(summary_fn)  # handles both mean and ~ mean(.x)*100
-  
+  summary_fn <- rlang::as_function(summary_fn) # handles both mean and ~ mean(.x)*100
+
   pid_level <- df |>
     drop_na(all_of(outcome_col)) |>
     group_by(experiment, pid, cond) |>
@@ -786,7 +836,7 @@ summarise_pid <- function(df, outcome_col, summary_fn) {
     group_by(experiment, cond) |>
     summarise(
       grp_val = mean(pid_val),
-      sem     = sd(pid_val) / sqrt(n()),
+      sem = sd(pid_val) / sqrt(n()),
       .groups = "drop"
     )
 
@@ -796,81 +846,79 @@ summarise_pid <- function(df, outcome_col, summary_fn) {
 acc_all <- summarise_pid(data_all, "acc", ~ mean(.x) * 100)
 head(acc_all)
 
-rt_all  <- summarise_pid(data_all, "rt",  mean)
+rt_all <- summarise_pid(data_all, "rt", mean)
 head(rt_all)
 
 # Define which conditions belong to which experiments
 exp_conds <- tribble(
-  ~experiment, ~cond,
-  1, "learned", 1, "novel",
-  2, "learned", 2, "novel",
-  3, "famous",  3, "novel",
-  4, "famous",  4, "novel",
-  5, "famous",  5, "novel",
+  ~experiment , ~cond     ,
+            1 , "learned" , 1 , "novel" ,
+            2 , "learned" , 2 , "novel" ,
+            3 , "famous"  , 3 , "novel" ,
+            4 , "famous"  , 4 , "novel" ,
+            5 , "famous"  , 5 , "novel" ,
 )
 
 # Filter rt_all and acc_all to only relevant conditions per experiment
-rt_plot_data  <- rt_all  |> semi_join(exp_conds, by = c("experiment", "cond"))
+rt_plot_data <- rt_all |> semi_join(exp_conds, by = c("experiment", "cond"))
 acc_plot_data <- acc_all |> semi_join(exp_conds, by = c("experiment", "cond"))
 ```
 
 ```{r}
 #| label: create-rt-acc-plots
 #| include: false
-
 ## paired plots for summarised RT and accuracy data
 paired_plot <- function(df, yvar, ylab, ylims) {
-  
   # set consistent jitter for dots and lines
   pos <- position_jitter(width = 0.06, height = 0, seed = 123)
-  
-  ggplot(df, aes(x = cond, y = {{ yvar }}, 
-                 fill = cond, colour = cond)) +
+
+  ggplot(df, aes(x = cond, y = {{ yvar }}, fill = cond, colour = cond)) +
     # per-participant lines
     geom_line(
       aes(group = pid),
       position = pos,
-      colour    = "grey70",
+      colour = "grey70",
       linewidth = 0.3,
-      alpha     = 0.5
+      alpha = 0.5
     ) +
     # per-participant dots
     geom_point(
       position = pos,
-      alpha    = 0.5,
-      size     = 1.5
+      alpha = 0.5,
+      size = 1.5
     ) +
     # group mean + 95% CI
     stat_summary(
-      fun.data  = mean_se,
-      geom      = "pointrange",
-      colour    = "black",
-      size      = 0.6,
+      fun.data = mean_se,
+      geom = "pointrange",
+      colour = "black",
+      size = 0.6,
       linewidth = 1.2,
-      fun.args  = list(mult = 1.96)
+      fun.args = list(mult = 1.96)
     ) +
     # line connecting group means
     stat_summary(
       aes(group = experiment),
-      fun       = mean,
-      geom      = "line",
-      colour    = "black",
+      fun = mean,
+      geom = "line",
+      colour = "black",
       linewidth = 0.8
     ) +
-    scale_fill_manual(values   = myColors_3) +
+    scale_fill_manual(values = myColors_3) +
     scale_colour_manual(values = myColors_3) +
     facet_grid(
-      ~ experiment, scales = "free_x",
+      ~experiment,
+      scales = "free_x",
       labeller = labeller(experiment = ~ paste("Experiment", .x))
     ) +
     coord_cartesian(ylim = ylims) +
-    labs(x = NULL, y = ylab) 
+    labs(x = NULL, y = ylab)
 }
 
-acc_paired <- paired_plot(acc_plot_data, pid_val, "Accuracy [%]",  c(0, 100))
+acc_paired <- paired_plot(acc_plot_data, pid_val, "Accuracy [%]", c(0, 100))
 #acc_paired
 
-rt_paired  <- paired_plot(rt_plot_data,  pid_val, "Mean RT [s]",   c(0, 1.75))
+rt_paired <- paired_plot(rt_plot_data, pid_val, "Mean RT [s]", c(0, 1.75))
 #rt_paired
 
 ## Density plots for all trial RT data
@@ -878,9 +926,9 @@ rt_paired  <- paired_plot(rt_plot_data,  pid_val, "Mean RT [s]",   c(0, 1.75))
 # Dummy data to set x limits per experiment
 dummy_limits <- tibble(
   experiment = c(1, 1, 2, 2, 3, 3, 4, 4),
-  rt         = c(0, 2.5, 0, 2.5, 0, 1.1, 0, 1.1),
-  cond       = "novel",
-  density    = 0
+  rt = c(0, 2.5, 0, 2.5, 0, 1.1, 0, 1.1),
+  cond = "novel",
+  density = 0
 )
 
 rt_density <- data_all |>
@@ -896,17 +944,24 @@ rt_density <- data_all |>
   ) +
   geom_text(
     data = tibble(
-      experiment = 3, x = 0.08, y = 7,
+      experiment = 3,
+      x = 0.08,
+      y = 7,
       label = "RT artefact\n (80ms bins)"
     ),
     aes(x = x, y = y, label = label),
-    inherit.aes = FALSE, size = 2.5, hjust = 0,
-    colour = "grey40", lineheight = 0.9
+    inherit.aes = FALSE,
+    size = 2.5,
+    hjust = 0,
+    colour = "grey40",
+    lineheight = 0.9
   ) +
   geom_segment(
     data = tibble(experiment = 3, x = 0.48, xend = 0.58, y = 6.7, yend = 5.5),
     aes(x = x, xend = xend, y = y, yend = yend),
-    inherit.aes = FALSE, colour = "grey40", linewidth = 0.4,
+    inherit.aes = FALSE,
+    colour = "grey40",
+    linewidth = 0.4,
     arrow = arrow(length = unit(0.15, "cm"))
   ) +
   scale_fill_manual(values = myColors_3) +
@@ -914,17 +969,19 @@ rt_density <- data_all |>
   scale_x_continuous(breaks = scales::breaks_pretty(n = 3)) +
   facet_grid(
     ~experiment,
-    scales   = "free_x",
+    scales = "free_x",
     labeller = labeller(experiment = ~ paste("Experiment", .x))
   ) +
   labs(
-    x = "Response time [s]", y = "Density",
-    fill = "Condition", colour = "Condition"
+    x = "Response time [s]",
+    y = "Density",
+    fill = "Condition",
+    colour = "Condition"
   ) +
   theme(
-    legend.position  = c(0.92, 0.8),
-    legend.text      = element_text(size = 7),
-    legend.title     = element_text(size = 8)
+    legend.position = c(0.92, 0.8),
+    legend.text = element_text(size = 7),
+    legend.title = element_text(size = 8)
   )
 rt_density
 ```
@@ -939,7 +996,6 @@ rt_density
 #| warning: false
 #| fig-width: 7
 #| fig-height: 4
-
 acc_paired
 rt_paired
 ```
@@ -950,7 +1006,6 @@ rt_paired
 #| warning: false
 #| fig-width: 7
 #| fig-height: 4
-
 rt_density
 ```
 
@@ -961,7 +1016,6 @@ For all experiments, posterior distributions for drift rate and threshold parame
 ```{r}
 #| label: download-models
 #| include: false
-
 ## Model objects are rather big files, so we keep them on the OSF
 ## This will only download them once and not again
 # OSF authentication is only required if the project is private.
@@ -970,7 +1024,9 @@ For all experiments, posterior distributions for drift rate and threshold parame
 # See https://docs.ropensci.org/osfr/articles/auth.html for instructions.
 # this next line means authentication is attempted only if a token exists — so the same code works for both private and public scenarios
 
-if (Sys.getenv("OSF_PAT") != "") osf_auth(Sys.getenv("OSF_PAT")) 
+if (Sys.getenv("OSF_PAT") != "") {
+  osf_auth(Sys.getenv("OSF_PAT"))
+}
 
 ## download function
 download_if_missing <- function(exp_folder, file_name, local_dir) {
@@ -998,9 +1054,7 @@ download_if_missing("exp_5", "LBA_exp5.rds", "exp_5/models")
 ```{r}
 #| label: wrangle-lba
 #| include: false
-
 wrangle_lba <- function(model, exp_num, cond_label) {
-  
   param_cols <- c(
     "v_SNovel_lMTRUE",
     "v_SNovel_lMFALSE",
@@ -1009,45 +1063,49 @@ wrangle_lba <- function(model, exp_num, cond_label) {
     "sv_lMTRUE",
     "B_lRNovel",
     paste0("B_lR", cond_label),
-    "A", "t0"
+    "A",
+    "t0"
   )
-  
+
   # subject-level — alpha, natural scale, drop constant
-  params <- EMC2::parameters(model, selection = "alpha", 
-                              N = NULL, map = TRUE) |>
+  params <- EMC2::parameters(
+    model,
+    selection = "alpha",
+    N = NULL,
+    map = TRUE
+  ) |>
     select(-any_of("sv_lMFALSE"))
-  
-  n_pids  <- length(unique(params$subjects))
+
+  n_pids <- length(unique(params$subjects))
   n_draws <- nrow(params) / n_pids
-  
+
   # pid-level posteriors
   pid_long <- params |>
     as_tibble() |>
     pivot_longer(
-      cols      = all_of(param_cols),
-      names_to  = "param",
+      cols = all_of(param_cols),
+      names_to = "param",
       values_to = "value"
     ) |>
     rename(pid = subjects) |>
     mutate(
-      .draw      = rep(1:n_draws, each = length(param_cols), times = n_pids),
+      .draw = rep(1:n_draws, each = length(param_cols), times = n_pids),
       experiment = exp_num
     )
-  
+
   # group-level — mu, natural scale
-  params_mu  <- EMC2::parameters(model, selection = "mu",
-                                  N = NULL, map = TRUE)
+  params_mu <- EMC2::parameters(model, selection = "mu", N = NULL, map = TRUE)
   n_draws_mu <- nrow(params_mu)
-  
+
   params_mu |>
     as_tibble() |>
     mutate(
-      .draw      = 1:n_draws_mu,
+      .draw = 1:n_draws_mu,
       experiment = exp_num
     ) |>
     pivot_longer(
-      cols      = all_of(param_cols),
-      names_to  = "param",
+      cols = all_of(param_cols),
+      names_to = "param",
       values_to = "value"
     )
 }
@@ -1055,10 +1113,10 @@ wrangle_lba <- function(model, exp_num, cond_label) {
 
 # wrangle_lba <- function(model, exp_num, cond_label) {
 #   # cond_label: "Learned" for Exp 1&2, "Famous" for Exp 4
-#   
+#
 #   # Extract posterior samples and pivot to long format
 #   params <- EMC2::parameters(model, selection = "alpha", N = NULL)
-#   
+#
 #   param_cols <- c(
 #     paste0("v_SNovel:lMTRUE"),
 #     paste0("v_SNovel:lMFALSE"),
@@ -1069,10 +1127,10 @@ wrangle_lba <- function(model, exp_num, cond_label) {
 #     paste0("B_lR", cond_label),
 #     "A", "t0"
 #   )
-#   
+#
 #   n_pids      <- length(unique(params$subjects))
 #   n_draws     <- nrow(params) / n_pids
-#   
+#
 #   pid_long <- params |>
 #     as_tibble() |>
 #     pivot_longer(
@@ -1085,13 +1143,13 @@ wrangle_lba <- function(model, exp_num, cond_label) {
 #       .draw  = rep(1:n_draws, each = length(param_cols), times = n_pids),
 #       experiment = exp_num
 #     )
-#   
+#
 #   # Average across participants to get group level
 #   pid_long |>
 #     group_by(experiment, .draw, param) |>
 #     summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
 # }
-# 
+#
 # Load models and wrangle
 LBA_exp1 <- readRDS(here("exp_1", "models", "LBA_exp1.rds"))
 LBA_exp2 <- readRDS(here("exp_2", "models", "LBA_exp2.rds"))
@@ -1109,28 +1167,28 @@ theta_all <- bind_rows(
 ```{r}
 #| label: wrangle-threshold
 #| include: false
-
 # Threshold
 thresh_all <- theta_all |>
   filter(str_detect(param, "B_")) |>
   mutate(
-    response   = case_when(
-      str_detect(param, "lRNovel")   ~ "novel",
+    response = case_when(
+      str_detect(param, "lRNovel") ~ "novel",
       str_detect(param, "lRLearned") ~ "learned",
-      str_detect(param, "lRFamous")  ~ "famous"
+      str_detect(param, "lRFamous") ~ "famous"
     ),
-    response = factor(response, levels = c("novel", "learned", "famous")) |> droplevels()
+    response = factor(response, levels = c("novel", "learned", "famous")) |>
+      droplevels()
     #experiment = factor(experiment, labels = c("Experiment 1", "Experiment 2", "Experiment 4"))
   )
 
 # Threshold contrast
 thresh_diff_all <- thresh_all |>
   pivot_wider(
-    id_cols     = c(experiment, .draw),
-    names_from  = response,
+    id_cols = c(experiment, .draw),
+    names_from = response,
     values_from = value
   ) |>
-  mutate(diff = novel - coalesce(learned, famous))  # works for both label schemes
+  mutate(diff = novel - coalesce(learned, famous)) # works for both label schemes
 
 # Quantiles for inline text
 # Group-level quantiles per parameter per experiment — for inline text
@@ -1147,38 +1205,38 @@ thresh_diff_q <- thresh_diff_all |>
 ```{r}
 #| label: wrangle-drift
 #| include: false
-
 # Drift rate
 drift_all <- theta_all |>
   filter(str_detect(param, "v_S")) |>
   mutate(
     condition = case_when(
-      str_detect(param, "Novel")   ~ "novel",
+      str_detect(param, "Novel") ~ "novel",
       str_detect(param, "Learned") ~ "learned",
-      str_detect(param, "Famous")  ~ "famous"
+      str_detect(param, "Famous") ~ "famous"
     ),
-    accuracy  = if_else(str_detect(param, "TRUE"), "true", "false"),
-    condition = factor(condition, levels = c("novel", "learned", "famous")) |> droplevels(),
-    accuracy  = factor(accuracy,  levels = c("false", "true"))
+    accuracy = if_else(str_detect(param, "TRUE"), "true", "false"),
+    condition = factor(condition, levels = c("novel", "learned", "famous")) |>
+      droplevels(),
+    accuracy = factor(accuracy, levels = c("false", "true"))
   )
 
 # TRUE - FALSE per condition
 drift_acc_diff_all <- drift_all |>
   pivot_wider(
-    id_cols     = c(experiment, .draw, condition),
-    names_from  = accuracy,
+    id_cols = c(experiment, .draw, condition),
+    names_from = accuracy,
     values_from = value
   ) |>
   mutate(
-    diff       = true - false
+    diff = true - false
     #experiment = factor(experiment, labels = c("Experiment 1", "Experiment 2", "Experiment 4"))
   )
 
 # Novel - Learned/Famous contrast
 drift_cond_diff_all <- drift_acc_diff_all |>
   pivot_wider(
-    id_cols     = c(experiment, .draw),
-    names_from  = condition,
+    id_cols = c(experiment, .draw),
+    names_from = condition,
     values_from = diff
   ) |>
   mutate(diff = novel - coalesce(learned, famous))
@@ -1207,34 +1265,37 @@ Inspection of the posterior distributions of the effect of face familiarity on t
 #| layout-ncol: 2
 #| fig-height: 10
 #| fig-width: 7
-
 # Left panel: condition distributions
 ggplot(thresh_all, aes(x = value, y = fct_rev(response), fill = response)) +
   stat_halfeye(alpha = 0.7) +
   geom_vline(xintercept = 0, colour = "darkgrey") +
   scale_fill_manual(values = myColors_3) +
   scale_y_discrete(drop = TRUE) +
-  facet_grid(experiment ~ .,
-             labeller = labeller(experiment = ~ paste("Experiment", .x)),
-             scales = "free_y") +
+  facet_grid(
+    experiment ~ .,
+    labeller = labeller(experiment = ~ paste("Experiment", .x)),
+    scales = "free_y"
+  ) +
   labs(x = "Threshold", y = "Response") +
   theme(
-    text       = element_text(size = 20, face = "bold"),
+    text = element_text(size = 20, face = "bold"),
     strip.text = element_text(size = 20, face = "bold"),
-    axis.text  = element_text(size = 20, face = "bold")
+    axis.text = element_text(size = 20, face = "bold")
   )
 
 # Right panel: contrast
 ggplot(thresh_diff_all, aes(x = diff, y = "")) +
   stat_halfeye(alpha = 0.7, fill = "#1A7A7A") +
   geom_vline(xintercept = 0, colour = "darkgrey") +
-  facet_grid(experiment ~ .,
-             labeller = labeller(experiment = ~ paste("Experiment", .x))) +
+  facet_grid(
+    experiment ~ .,
+    labeller = labeller(experiment = ~ paste("Experiment", .x))
+  ) +
   labs(x = "Threshold difference", y = "") +
   theme(
-    text       = element_text(size = 20, face = "bold"),
+    text = element_text(size = 20, face = "bold"),
     strip.text = element_text(size = 20, face = "bold"),
-    axis.text  = element_text(size = 20, face = "bold")
+    axis.text = element_text(size = 20, face = "bold")
   )
 ```
 
@@ -1252,34 +1313,40 @@ The quality of the evidence accumulation was greater for Novel faces compared to
 #| layout-ncol: 2
 #| fig-height: 10
 #| fig-width: 7
-
 # Left panel: condition distributions
-ggplot(drift_acc_diff_all, aes(x = diff, y = fct_rev(condition), fill = condition)) +
+ggplot(
+  drift_acc_diff_all,
+  aes(x = diff, y = fct_rev(condition), fill = condition)
+) +
   stat_halfeye(alpha = 0.7) +
   geom_vline(xintercept = 0, colour = "darkgrey") +
   scale_fill_manual(values = myColors_3) +
   scale_y_discrete(drop = TRUE) +
-  facet_grid(experiment ~ .,
-             labeller = labeller(experiment = ~ paste("Experiment", .x)),
-             scales = "free_y") +
+  facet_grid(
+    experiment ~ .,
+    labeller = labeller(experiment = ~ paste("Experiment", .x)),
+    scales = "free_y"
+  ) +
   labs(x = "Drift rate (TRUE - FALSE)", y = "Condition") +
   theme(
-    text       = element_text(size = 20, face = "bold"),
+    text = element_text(size = 20, face = "bold"),
     strip.text = element_text(size = 20, face = "bold"),
-    axis.text  = element_text(size = 20, face = "bold")
+    axis.text = element_text(size = 20, face = "bold")
   )
 
 # Right panel: contrast
 ggplot(drift_cond_diff_all, aes(x = diff, y = "")) +
   stat_halfeye(alpha = 0.7, fill = "#1A7A7A") +
   geom_vline(xintercept = 0, colour = "darkgrey") +
-  facet_grid(experiment ~ .,
-             labeller = labeller(experiment = ~ paste("Experiment", .x))) +
+  facet_grid(
+    experiment ~ .,
+    labeller = labeller(experiment = ~ paste("Experiment", .x))
+  ) +
   labs(x = "Drift rate difference", y = "") +
   theme(
-    text       = element_text(size = 20, face = "bold"),
+    text = element_text(size = 20, face = "bold"),
     strip.text = element_text(size = 20, face = "bold"),
-    axis.text  = element_text(size = 20, face = "bold")
+    axis.text = element_text(size = 20, face = "bold")
   )
 ```
 
@@ -1287,43 +1354,78 @@ ggplot(drift_cond_diff_all, aes(x = diff, y = "")) +
 #| label: tbl-lba-params
 #| tbl-cap: "Posterior median and 95% quantile intervals for threshold and drift rate parameters across experiments."
 #| include: true
-
 # Build table
 thresh_cond_table <- theta_all_q |>
   filter(str_detect(param, "B_")) |>
   mutate(
     parameter = "Threshold",
     condition = case_when(
-      str_detect(param, "lRNovel")   ~ "novel",
+      str_detect(param, "lRNovel") ~ "novel",
       str_detect(param, "lRLearned") ~ "learned",
-      str_detect(param, "lRFamous")  ~ "famous"
+      str_detect(param, "lRFamous") ~ "famous"
     )
   ) |>
-  select(experiment, parameter, condition, median = value, lower = .lower, upper = .upper)
+  select(
+    experiment,
+    parameter,
+    condition,
+    median = value,
+    lower = .lower,
+    upper = .upper
+  )
 
 thresh_table <- thresh_diff_all |>
   group_by(experiment) |>
   median_qi(diff) |>
   mutate(
     parameter = "Threshold contrast",
-    condition = if_else(experiment == 4 | experiment == 5, "novel - famous", "novel - learned")
+    condition = if_else(
+      experiment == 4 | experiment == 5,
+      "novel - famous",
+      "novel - learned"
+    )
   ) |>
-  select(experiment, parameter, condition, median = diff, lower = .lower, upper = .upper)
+  select(
+    experiment,
+    parameter,
+    condition,
+    median = diff,
+    lower = .lower,
+    upper = .upper
+  )
 
 drift_table <- drift_acc_diff_all |>
   group_by(experiment, condition) |>
   median_qi(diff) |>
   mutate(parameter = "Drift rate") |>
-  select(experiment, parameter, condition, median = diff, lower = .lower, upper = .upper)
+  select(
+    experiment,
+    parameter,
+    condition,
+    median = diff,
+    lower = .lower,
+    upper = .upper
+  )
 
 drift_diff_table <- drift_cond_diff_all |>
   group_by(experiment) |>
   median_qi(diff) |>
   mutate(
     parameter = "Drift rate contrast",
-    condition = if_else(experiment == 4 | experiment == 5, "novel - famous", "novel - learned")
+    condition = if_else(
+      experiment == 4 | experiment == 5,
+      "novel - famous",
+      "novel - learned"
+    )
   ) |>
-  select(experiment, parameter, condition, median = diff, lower = .lower, upper = .upper)
+  select(
+    experiment,
+    parameter,
+    condition,
+    median = diff,
+    lower = .lower,
+    upper = .upper
+  )
 
 ## Combine
 lba_table <- bind_rows(
@@ -1333,27 +1435,42 @@ lba_table <- bind_rows(
   drift_diff_table
 ) |>
   mutate(
-    qi         = paste0("[", round(lower, 3), ", ", round(upper, 3), "]"),
-    median     = round(median, 3),
+    qi = paste0("[", round(lower, 3), ", ", round(upper, 3), "]"),
+    median = round(median, 3),
     experiment = paste("Experiment", experiment),
-    Parameter  = factor(parameter, levels = c("Threshold", "Threshold contrast",
-                                               "Drift rate", "Drift rate contrast")),
-    Condition  = factor(condition, levels = c("novel", "learned", "famous",
-                                              "novel - learned", "novel - famous"))
+    Parameter = factor(
+      parameter,
+      levels = c(
+        "Threshold",
+        "Threshold contrast",
+        "Drift rate",
+        "Drift rate contrast"
+      )
+    ),
+    Condition = factor(
+      condition,
+      levels = c(
+        "novel",
+        "learned",
+        "famous",
+        "novel - learned",
+        "novel - famous"
+      )
+    )
   ) |>
   arrange(experiment, Parameter, Condition) |>
   select(
     Experiment = experiment,
     Parameter,
     Condition,
-    Median     = median,
-    `95% QI`   = qi
+    Median = median,
+    `95% QI` = qi
   )
-# 
+#
 # # lba_table |>
 # #   tt()
-# 
-# 
+#
+#
 # find first row of each experiment group
 exp1_start <- which(lba_table$Experiment == "Experiment 1")[1]
 exp2_start <- which(lba_table$Experiment == "Experiment 2")[1]
@@ -1372,7 +1489,6 @@ lba_table |>
       "Experiment 2" = exp2_start,
       "Experiment 4" = exp4_start,
       "Experiment 5" = exp5_start
-
     )
   ) |>
   style_tt(fontsize = 0.85)
@@ -1409,7 +1525,7 @@ lba_table |>
 #     `Median ` = median_2, `95% QI ` = qi_2,
 #     `Median  ` = median_4, `95% QI  ` = qi_4
 #   )
-# 
+#
 # lba_wide |>
 #   tt(
 #     notes = "QI = quantile interval."

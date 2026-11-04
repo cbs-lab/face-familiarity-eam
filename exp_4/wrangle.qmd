@@ -12,28 +12,33 @@ This file wrangles data for Exp 4 in the face familiarity study.
 ```{r}
 #| label: setup
 #| include: false
-
 pkgs <- c(
-  "tidyverse", "here", "patchwork"
-  )
+  "tidyverse",
+  "here",
+  "patchwork"
+)
 vapply(
-  pkgs, library, logical(1), character.only = TRUE, logical.return = TRUE
-  )
+  pkgs,
+  library,
+  logical(1),
+  character.only = TRUE,
+  logical.return = TRUE
+)
 
 theme_set(
   theme_bw() +
     theme(
-      text  = element_text(size = 15, face = "bold"),
+      text = element_text(size = 15, face = "bold"),
       title = element_text(size = 15, face = "bold"),
       legend.position = "none"
     )
 )
 
-safe_pal   <- paletteer::paletteer_d("rcartocolor::Safe", 4)
+safe_pal <- paletteer::paletteer_d("rcartocolor::Safe", 4)
 
 myColors_2 <- c("Novel" = safe_pal[1], "Famous" = safe_pal[3])
 
-pd2        <- position_dodge(1)
+pd2 <- position_dodge(1)
 ```
 
 # 1. Read in raw data
@@ -42,43 +47,25 @@ Raw data files are not stored in the repo. This section reads them in and
 saves a combined file. Skip to section 2 if the combined file already exists.
 
 ```{r}
-#| label: read-raw
-#| eval: false
-
-raw <- list.files(
-  path       = here("exp_4", "data", "raw"),
-  pattern    = "*csv",
-  full.names = TRUE,
-  recursive  = TRUE
-) |>
-  set_names() |>
-  map(read_csv, 
-      col_types = cols(.default = "c"),
-      show_col_types = FALSE
-      ) |>
-  list_rbind(names_to = "file")
-
-write_csv(raw, here("exp_4", "data", "raw_exp_4.csv"))
+#| label: read-combined
+raw <- read_csv(
+  here("exp_4", "data", "raw_data_exp_4.csv.gz"),
+  guess_max = Inf,
+  show_col_types = FALSE
+)
+head(raw)
 ```
 
 # 2. Wrangle
 
 ```{r}
-#| label: read-combined
-
-raw <- read_csv(here("exp_4", "data", "raw_exp_4.csv"))
-```
-
-```{r}
 #| label: wrangle
-
 data <- raw |>
   filter(!is.na(recognition_trial_number)) |>
   rename(
-    pid      = participant,
     keypress = key_resp_recognition.keys,
-    cond     = identity_type,
-    rt       = key_resp_recognition.rt
+    cond = identity_type,
+    rt = key_resp_recognition.rt
   ) |>
   mutate(
     block = rep(1:3, each = 60, times = n_distinct(pid)),
@@ -98,19 +85,17 @@ data <- raw |>
   select(pid, block, cond, keypress, acc, rt) |>
   arrange(pid)
 
-write_csv(data, here("exp_4", "data", "wrangle_exp_4.csv"))
+write_csv(data, here("exp_4", "data", "wrangle_data_exp_4.csv"))
 ```
 
 # 3. Exclusions
 
 ```{r}
 #| label: exclusions
-
 # familiarity ratings exclusion first
 exclude_ratings <- raw |>
   filter(!is.na(familiarity_rating)) |>
   mutate(
-    pid                = participant,
     familiarity_rating = as.numeric(familiarity_rating)
   ) |>
   group_by(pid) |>
@@ -142,14 +127,13 @@ data <- data |>
     !pid %in% exclude_rt,
     !pid %in% exclude_acc,
     !is.na(rt),
-    rt <= 1.1,  # enforced live in PsychoPy/Pavlovia
-    rt >= 0.2   # preregistered lower bound 
+    rt <= 1.1, # enforced live in PsychoPy/Pavlovia
+    rt >= 0.2 # preregistered lower bound
   )
 ```
 
 ```{r}
 #| label: data-check
-
 data |>
   group_by(pid, block, cond) |>
   summarise(n = n(), .groups = "drop")
@@ -159,23 +143,22 @@ data |>
   summarise(acc = mean(acc), .groups = "drop")
 
 cat("Ratings exclusions:", length(exclude_ratings), "\n")
-cat("RT exclusions:",      length(exclude_rt),      "\n")
-cat("Accuracy exclusions:", length(exclude_acc),    "\n")
-cat("Final n:",            n_distinct(data$pid),    "\n")
+cat("RT exclusions:", length(exclude_rt), "\n")
+cat("Accuracy exclusions:", length(exclude_acc), "\n")
+cat("Final n:", n_distinct(data$pid), "\n")
 ```
 
 # 4. Summary statistics
 
 ```{r}
 #| label: summary-rt-acc
-
 rt_pid <- data |>
   group_by(pid, block, cond) |>
   summarise(
     mean = mean(rt),
-    sd   = sd(rt),
-    n    = n(),
-    sem  = sd / sqrt(n),
+    sd = sd(rt),
+    n = n(),
+    sem = sd / sqrt(n),
     .groups = "drop"
   )
 
@@ -183,17 +166,17 @@ rt_group <- data |>
   group_by(cond) |>
   summarise(
     mean = mean(rt),
-    sd   = sd(rt),
-    n    = length(unique(pid)),
-    sem  = sd / sqrt(n),
+    sd = sd(rt),
+    n = length(unique(pid)),
+    sem = sd / sqrt(n),
     .groups = "drop"
   )
 
 acc_pid <- data |>
   group_by(pid, block, cond) |>
   summarise(
-    sum  = sum(acc),
-    n    = n(),
+    sum = sum(acc),
+    n = n(),
     perc = sum / n * 100,
     .groups = "drop"
   )
@@ -202,9 +185,9 @@ acc_group <- acc_pid |>
   group_by(cond) |>
   summarise(
     mean_perc = mean(perc),
-    sd        = sd(perc),
-    n         = n(),
-    sem       = sd / sqrt(n),
+    sd = sd(perc),
+    n = n(),
+    sem = sd / sqrt(n),
     .groups = "drop"
   )
 ```
@@ -213,70 +196,72 @@ acc_group <- acc_pid |>
 
 ```{r}
 #| label: plot-rt-bar
-
 p_rt <- ggplot(rt_group, aes(x = cond, y = mean, fill = cond, colour = cond)) +
   geom_col() +
   geom_errorbar(
     aes(ymin = mean - sem, ymax = mean + sem),
-    colour = "black", width = 0.2
+    colour = "black",
+    width = 0.2
   ) +
   geom_point(
-    data     = rt_pid |> group_by(pid, cond) |> summarise(mean = mean(mean), .groups = "drop"),
-    aes(y    = mean),
-    colour   = "black",
-    alpha    = 0.7,
+    data = rt_pid |>
+      group_by(pid, cond) |>
+      summarise(mean = mean(mean), .groups = "drop"),
+    aes(y = mean),
+    colour = "black",
+    alpha = 0.7,
     position = pd2
   ) +
-  scale_fill_manual(values   = myColors_2) +
+  scale_fill_manual(values = myColors_2) +
   scale_colour_manual(values = myColors_2) +
   coord_cartesian(ylim = c(0, 2)) +
   labs(x = "Condition", y = "Mean RT [s]")
 
 p_rt
-
 ```
 
 ```{r}
 #| label: plot-acc-bar
-
-p_acc <- ggplot(acc_group, aes(x = cond, y = mean_perc, fill = cond, colour = cond)) +
+p_acc <- ggplot(
+  acc_group,
+  aes(x = cond, y = mean_perc, fill = cond, colour = cond)
+) +
   geom_col() +
   geom_errorbar(
     aes(ymin = mean_perc - sem, ymax = mean_perc + sem),
-    colour = "black", width = 0.2
+    colour = "black",
+    width = 0.2
   ) +
   geom_point(
-    data     = acc_pid |> group_by(pid, cond) |> summarise(mean_perc = mean(perc), .groups = "drop"),
-    aes(y    = mean_perc),
-    colour   = "black",
-    alpha    = 0.7,
+    data = acc_pid |>
+      group_by(pid, cond) |>
+      summarise(mean_perc = mean(perc), .groups = "drop"),
+    aes(y = mean_perc),
+    colour = "black",
+    alpha = 0.7,
     position = pd2
   ) +
-  scale_fill_manual(values   = myColors_2) +
+  scale_fill_manual(values = myColors_2) +
   scale_colour_manual(values = myColors_2) +
   coord_cartesian(ylim = c(0, 100)) +
   labs(x = "Condition", y = "Accuracy [%]")
 
 p_acc
-
 ```
 
 ```{r}
 #| label: plot-rt-density
-
 p_rt_density <- ggplot(data, aes(x = rt, fill = cond, colour = cond)) +
   geom_density(alpha = 0.7) +
-  scale_fill_manual(values   = myColors_2) +
+  scale_fill_manual(values = myColors_2) +
   scale_colour_manual(values = myColors_2) +
   labs(x = "RT [s]")
 
 p_rt_density
-
 ```
 
 ```{r}
 #| label: combined-plots
-
 (p_rt | p_acc) / p_rt_density
 
 if (!dir.exists(here("exp_4", "figures"))) {
@@ -290,43 +275,39 @@ ggsave(here("exp_4", "figures", "rt_acc.jpeg"), width = 8, height = 6)
 
 ```{r}
 #| label: demographics
-
 demo_exp4 <- read_csv(here("exp_4", "data", "demo_exp_4.csv")) |>
-  filter(
-    Status != "RETURNED",
-    `Participant id` %in% unique(data$pid)
-  ) |>
   mutate(
-    pid    = as.character(`Participant id`),
-    age    = as.numeric(Age),
-    gender = as.character(Sex)
-  ) |>
-  select(pid, age, gender)
+    pid = as.character(pid),
+    age = as.numeric(age),
+    gender = as.character(gender)
+  )
 
+## filter demo by filtered main task data
+demo_exp4_clean <- demo_exp4 |>
+  semi_join(data, by = "pid")
 ```
 
 # 7. Save
 
 ```{r}
 #| label: save
-
 # save data to model
 write_csv(data, here("exp_4", "data", "data_exp_4.csv"))
 
 # save exclusion counts as a small csv
 exclusions <- tibble(
-  started         = 58L,
-  withdrew        = 12L,
-  completed       = 46L,
-  exclude_rt      = length(exclude_rt),
-  exclude_acc     = length(exclude_acc),
-  over_95         = NA_integer_,
-  under_55        = NA_integer_,
+  started = 58L,
+  withdrew = 12L,
+  completed = 46L,
+  exclude_rt = length(exclude_rt),
+  exclude_acc = length(exclude_acc),
+  over_95 = NA_integer_,
+  under_55 = NA_integer_,
   exclude_ratings = length(exclude_ratings),
-  final_n         = n_distinct(data$pid)
+  final_n = n_distinct(data$pid)
 )
 write_csv(exclusions, here("exp_4", "data", "exclusions_exp_4.csv"))
 
 # save cleaned demographics as a small csv
-write_csv(demo_exp4, here("exp_4", "data", "demo_exp_4_clean.csv"))
+write_csv(demo_exp4_clean, here("exp_4", "data", "demo_exp_4_clean.csv"))
 ```

@@ -64,6 +64,7 @@ face-familiarity-eam/
 ├── exp_2/                   # Experiment 2
 ├── exp_3/                   # Experiment 3
 ├── exp_4/                   # Experiment 4
+├── exp_5/                   # Experiment 5
 ├── manuscript/              # Quarto manuscript and supplementary
 │   ├── manuscript.qmd
 │   ├── supplementary.qmd
@@ -82,7 +83,7 @@ face-familiarity-eam/
 
 ## Shared experiment structure
 
-Each experiment folder (`exp_1/` through `exp_4/`) follows the same internal layout and file naming convention, with `N` replaced by the experiment number.
+Each experiment folder (`exp_1/` through `exp_5/`) follows the same internal layout and file naming convention, with `N` replaced by the experiment number.
 
 ### Scripts (`.qmd` files)
 
